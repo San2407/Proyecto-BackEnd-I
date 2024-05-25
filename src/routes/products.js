@@ -1,15 +1,15 @@
 import fs from "fs";
 
 class Product {
-    constructor(title, description, code, price, stock, category, status = true) {
+    constructor(title, description, code, price, stock, category, status) {
         this.id = 0;
         this.title = title;
         this.description = description;
         this.code = code;
         this.price = price;
         this.stock = stock;
+        this.status = status
         this.category = category;
-        this.status = status;
     }
 }
 
@@ -50,6 +50,10 @@ class ProductManager {
             product.id = newId;
         } else {
             product.id = 1;
+        }
+
+        if (product.status === undefined) {
+            product.status = true;
         }
 
         this.products.push(product)
