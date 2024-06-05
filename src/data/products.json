@@ -1,21 +1,13 @@
 [
-	{
-		"title": "title1 ",
-		"description": "description1",
-		"code": "code27",
-		"price": 500,
-		"stock": 5,
-		"category": "category1",
-		"id": 4
-	},
-	{
-		"title": "title1 ",
-		"description": "description1",
-		"code": "code107",
-		"price": 500,
-		"stock": 5,
-		"category": "category1",
-		"id": 5,
-		"status": true
-	}
+  {
+    "id": 1,
+    "title": "title1 ",
+    "description": "description1",
+    "code": "code107",
+    "price": 500,
+    "stock": 5,
+    "status": false,
+    "category": "category1",
+    "thumbnails": []
+  }
 ]

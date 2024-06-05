@@ -1,5 +1,5 @@
 import fs from "fs";
-
+import ProductManager from "./products.js";
 class cartManager {
     constructor(path) {
         this.path = path;
@@ -40,32 +40,34 @@ class cartManager {
     getProductsInCartById(cartId) {
         const id = parseInt(cartId);
         if (isNaN(id)) {
-            console.log("El id debe ser un número")
-            return "El id debe ser un número"
+            throw new Error("El id debe ser un número")
         }
         const cart = this.carts.find(c => c.id === id);
         if (!cart) {
-            return "No se encontró el carrito";
+            throw new Error("No se encontró el carrito")
         }
         return cart ? cart.products : [];
     }
     addProductToCart(cartId, productId) {
         const id = parseInt(cartId);
         if (isNaN(id)) {
-            console.log("El id del carrito debe ser un número")
-            return ("El id del carrito debe ser un número")
+            throw new Error("El id del carrito debe ser un número")
         }
         console.log("Lista de carritos cargada:", this.carts);
         const cart = this.carts.find(c => c.id === id);
 
         if (!cart) {
-            console.log("Carrito no encontrado. ID del carrito:", id)
-            return
+            throw new Error("Carrito no encontrado. ID del carrito:", id)
         }
 
-        const productExistente = cart.products.find(p => p.id === productId);
-        if (productExistente) {
-            productExistente.quantity += 1;
+        const productExistente = ProductManager.getProductsById(productId);
+        if (!productExistente) {
+            throw new Error("Producto no encontrado. ID del producto" + productId)
+        }
+
+        const productoEnCarrito = cart.products.find(p => p.id === productId);
+        if (productoEnCarrito) {
+            productoEnCarrito.quantity += 1;
         } else {
             cart.products.push({ id: productId, quantity: 1 });
         }

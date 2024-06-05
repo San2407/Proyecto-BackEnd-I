@@ -1,5 +1,5 @@
 import express from "express";
-import ProductManager from "./products.js"
+import ProductManager from "../managers/products.js"
 
 const router = express.Router();
 
@@ -41,8 +41,8 @@ router.put("/:id", (req, res) => {
     const { id } = req.params;
     const updateProduct = req.body;
     try {
-        ProductManager.updateProduct(id, updateProduct);
-        res.json({ message: "Producto actualizado correctamente" })
+        ProductManager.updateProduct(id, updateProduct)
+        res.status(201).json({ message: "Producto actualizado correctamente" })
     } catch (error) {
         res.status(500).json({ error: "Error al actualizar el producto" });
     }
@@ -52,7 +52,11 @@ router.delete("/:id", (req, res) => {
     const { id } = req.params;
     try {
         ProductManager.deleteProduct(id)
-        res.json({ message: "Producto eliminado correctamente" })
+        if (!id) {
+            res.status(404).json({ error: "Producto no encontrado" })
+        } else {
+            res.status(204).json({ message: "Producto eliminado correctamente" })
+        }
     } catch {
         res.status(500).json({ error: "Error al eliminar el producto" });
     }
