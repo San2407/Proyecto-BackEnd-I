@@ -1,4 +1,6 @@
 import fs from "fs";
+import __dirname from "../dirname.js";
+import path from "path";
 
 class Product {
     constructor(title, description, code, price, stock, category, status, thumbnails) {
@@ -133,5 +135,7 @@ class ProductManager {
     }
 }
 
-export default new ProductManager("./src/data/products.json")
 
+export const productManager = new ProductManager(
+    path.resolve(__dirname, "./data/products.json")
+);

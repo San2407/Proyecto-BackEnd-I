@@ -1,5 +1,7 @@
 import fs from "fs";
-import ProductManager from "./products.js";
+import { productManager } from "./products.js";
+import __dirname from "../dirname.js";
+import path from "path";
 class cartManager {
     constructor(path) {
         this.path = path;
@@ -60,7 +62,7 @@ class cartManager {
             throw new Error("Carrito no encontrado. ID del carrito:", id)
         }
 
-        const productExistente = ProductManager.getProductsById(productId);
+        const productExistente = productManager.getProductsById(productId);
         if (!productExistente) {
             throw new Error("Producto no encontrado. ID del producto" + productId)
         }
@@ -76,4 +78,7 @@ class cartManager {
     }
 }
 
-export default new cartManager("./src/data/carts.json")
+
+export const CartManager = new cartManager(
+    path.resolve(__dirname, "./data/carts.json")
+);
