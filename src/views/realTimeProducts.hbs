@@ -1,0 +1,39 @@
+<h1>Productos en Tiempo Real</h1>
+<form id="productForm">
+  <label for="title">Titulo</label>
+  <input type="text" id="title" name="title" required />
+  <label for="description">Descripción:</label>
+  <input type="text" id="description" name="description" required />
+  <label for="code">Código:</label>
+  <input type="text" id="code" name="code" required />
+  <label for="price">Precio:</label>
+  <input type="number" id="price" name="price" required />
+  <label for="stock">Stock:</label>
+  <input type="number" id="stock" name="stock" required />
+  <label for="status">Estado:</label>
+  <input type="text" id="status" name="status" />
+  <label for="category">Categoría:</label>
+  <input type="text" id="category" name="category" required />
+  <label for="thumbnails">Imágenes:</label>
+  <input type="text" id="thumbnails" name="thumbnails" />
+  <button type="submit">Agregar Producto</button>
+</form>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Titulo</th>
+      <th>Descripción</th>
+      <th>Código</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Estado</th>
+      <th>Categoría</th>
+      <th>Imágenes</th>
+    </tr>
+  </thead>
+  <tbody id="productosTbody">
+  </tbody>
+</table>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>

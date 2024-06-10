@@ -6,13 +6,17 @@ const router = express.Router();
 router.get("/", (req, res) => {
     try {
         const showProducts = productManager.getProducts();
-        res.json(showProducts);
+        res.render("home", { products: showProducts });
     } catch (error) {
         res.status(500).json({ error: "Error al obtener los productos" });
     }
 })
 
-router.get("/:id", (req, res) => {
+router.get("/realTimeProducts", (req, res) => {
+    res.render("realTimeProducts");
+})
+
+router.get("/api/products/:id", (req, res) => {
     const { id } = req.params;
     try {
         const product = productManager.getProductsById(id);
@@ -27,7 +31,7 @@ router.get("/:id", (req, res) => {
 })
 
 
-router.post("/", (req, res) => {
+router.post("/api/products", (req, res) => {
     const newProduct = req.body;
     try {
         productManager.addProduct(newProduct)
@@ -37,7 +41,7 @@ router.post("/", (req, res) => {
     }
 })
 
-router.put("/:id", (req, res) => {
+router.put("/api/products/:id", (req, res) => {
     const { id } = req.params;
     const updateProduct = req.body;
     try {
@@ -48,7 +52,7 @@ router.put("/:id", (req, res) => {
     }
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/api/products/:id", (req, res) => {
     const { id } = req.params;
     try {
         productManager.deleteProduct(id)
