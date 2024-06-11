@@ -16,6 +16,16 @@ router.get("/realTimeProducts", (req, res) => {
     res.render("realTimeProducts");
 })
 
+
+router.get("/api/products", (req, res) => {
+    try {
+        const showProducts = productManager.getProducts();
+        res.json(showProducts)
+    } catch {
+        res.status(500).json({ error: "Error al obtener los productos" })
+    }
+})
+
 router.get("/api/products/:id", (req, res) => {
     const { id } = req.params;
     try {

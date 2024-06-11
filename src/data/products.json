@@ -29,15 +29,6 @@
 		"category": "categoria22"
 	},
 	{
-		"id": 4,
-		"title": "titulo23",
-		"description": "descripcion23",
-		"code": "codigo23",
-		"price": 2333,
-		"stock": 343,
-		"category": "categoria23"
-	},
-	{
 		"id": 5,
 		"title": "titulo24",
 		"description": "Descripción24",
@@ -45,15 +36,6 @@
 		"price": 2444,
 		"stock": 4,
 		"category": "categoria24"
-	},
-	{
-		"id": 6,
-		"title": "titulo340",
-		"description": "Descripción340",
-		"code": "340",
-		"price": 3400,
-		"stock": 340,
-		"category": "categoria340"
 	},
 	{
 		"id": 7,

@@ -32,7 +32,15 @@ socket.on('products', (producto) => {
         <td>${product.status !== undefined ? product.status : "true"}</td>
         <td>${product.category}</td>
         <td>${product.thumbnails && product.thumbnails.length > 0 ? product.thumbnails.join(',') : "no se agregaron imágenes"} </td>
+        <td><button class = "deleteBtn" dataId = "${product.id}">Eliminar</button></td>
         `;
         productTableBody.appendChild(row);
     });
+
+    document.querySelectorAll(".deleteBtn").forEach(button => {
+        button.addEventListener('click', () => {
+            const productId = button.getAttribute("dataId");
+            socket.emit('deleteProduct', productId);
+        })
+    })
 });

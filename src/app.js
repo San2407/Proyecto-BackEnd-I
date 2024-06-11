@@ -39,4 +39,8 @@ io.on("connection", (socket) => {
         productManager.addProduct(product);
         io.emit('products', productManager.getProducts());
     });
+    socket.on('deleteProduct', (productId) => {
+        productManager.deleteProduct(productId);
+        io.emit('products', productManager.getProducts());
+    })
 })
