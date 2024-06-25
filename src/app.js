@@ -1,6 +1,5 @@
-import express from "express";
-import productRoutes from "./routes/products.routes.js"
-import cartsRoutes from "./routes/carts.routes.js"
+import express from "express"
+import indexRoutes from "./routes/index.js"
 import handlebars from "express-handlebars"
 import path from "path"
 import __dirname from "./dirname.js";
@@ -21,8 +20,7 @@ app.engine("hbs", handlebars.engine({
 app.set("view engine", "hbs")
 app.set("views", `${__dirname}/views`);
 
-app.use("/", productRoutes)
-app.use("/api/carts", cartsRoutes)
+app.use("/", indexRoutes)
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);

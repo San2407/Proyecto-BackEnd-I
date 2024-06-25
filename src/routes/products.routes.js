@@ -6,27 +6,13 @@ const router = express.Router();
 router.get("/", (req, res) => {
     try {
         const showProducts = productManager.getProducts();
-        res.render("home", { products: showProducts });
-    } catch (error) {
-        res.status(500).json({ error: "Error al obtener los productos" });
-    }
-})
-
-router.get("/realTimeProducts", (req, res) => {
-    res.render("realTimeProducts");
-})
-
-
-router.get("/api/products", (req, res) => {
-    try {
-        const showProducts = productManager.getProducts();
         res.json(showProducts)
     } catch {
         res.status(500).json({ error: "Error al obtener los productos" })
     }
 })
 
-router.get("/api/products/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     const { id } = req.params;
     try {
         const product = productManager.getProductsById(id);
@@ -41,7 +27,7 @@ router.get("/api/products/:id", (req, res) => {
 })
 
 
-router.post("/api/products", (req, res) => {
+router.post("/", (req, res) => {
     const newProduct = req.body;
     try {
         productManager.addProduct(newProduct)
@@ -51,7 +37,7 @@ router.post("/api/products", (req, res) => {
     }
 })
 
-router.put("/api/products/:id", (req, res) => {
+router.put("/:id", (req, res) => {
     const { id } = req.params;
     const updateProduct = req.body;
     try {
@@ -62,7 +48,7 @@ router.put("/api/products/:id", (req, res) => {
     }
 })
 
-router.delete("/api/products/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
     const { id } = req.params;
     try {
         productManager.deleteProduct(id)
