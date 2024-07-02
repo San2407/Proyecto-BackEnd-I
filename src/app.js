@@ -5,8 +5,10 @@ import path from "path"
 import __dirname from "./dirname.js";
 import { Server } from "socket.io"
 import { productManager } from "./managers/products.js";
+import connectionDB from "./db.js";
 const app = express();
 
+connectionDB();
 const PORT = 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
