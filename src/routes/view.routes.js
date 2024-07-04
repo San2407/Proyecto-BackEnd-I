@@ -1,12 +1,13 @@
 import express from "express"
-import { productManager } from "../managers/products.js"
+import Producto from "../models/products.models.js"
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+    const { page, limit } = req.query;
     try {
-        const showProducts = productManager.getProducts();
-        res.render("home", { products: showProducts });
+        const productos = await Producto.paginate({}, { limit, page })
+        res.render("home", { productos });
     } catch (error) {
         res.status(500).json({ error: "Error al obtener los productos" });
     }

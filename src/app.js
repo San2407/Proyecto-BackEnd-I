@@ -17,6 +17,10 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.engine("hbs", handlebars.engine({
     extname: "hbs",
     defaultLayout: "main",
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    },
 }))
 
 app.set("view engine", "hbs")
