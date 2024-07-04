@@ -4,8 +4,6 @@ const dbUrl = 'mongodb://127.0.0.1:27017';
 const connectionDB = async () => {
     try {
         await mongoose.connect(dbUrl, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
             serverSelectionTimeoutMS: 30000,
         })
         console.log('MongoDB connected')

@@ -1,84 +1,109 @@
-import fs from "fs";
-import { productManager } from "./products.js";
-import __dirname from "../dirname.js";
-import path from "path";
-class cartManager {
-    constructor(path) {
-        this.path = path;
-        this.carts = this.readCart();
-    }
-    readCart() {
-        if (fs.existsSync(this.path)) {
-            try {
-                const cartsData = fs.readFileSync(this.path, "utf-8");
-                return JSON.parse(cartsData)
-            } catch (error) {
-                console.log("Error al leer el archivo")
-                return [];
-            }
-        }
-    }
-    writeCartFile(carts) {
-        try {
-            fs.writeFileSync(this.path, JSON.stringify(carts, null, "\t"), "utf-8")
-            console.log("Se ha agregado con éxito");
-        } catch (error) {
-            console.error("Error al escribir en el archivo:", error.message)
-        }
-    }
-    createCart() {
-        const cartId = this.carts.length > 0 ? this.carts[this.carts.length - 1].id + 1 : 1;
-
-        const newCart = {
-            id: cartId,
-            products: []
-        }
-
-        this.carts.push(newCart);
-        this.writeCartFile(this.carts);
+import mongoose from "mongoose";
+import Cart from "../models/carts.models.js";
+import Producto from "../models/products.models.js";
+class CartManager {
+    async createCart() {
+        const newCart = new Cart({ products: [] })
+        await newCart.save();
         return newCart
     }
 
-    getProductsInCartById(cartId) {
-        const id = parseInt(cartId);
-        if (isNaN(id)) {
-            throw new Error("El id debe ser un número")
+    async getProductsInCartById(cartId) {
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw new Error("El id debe ser un objetoID valido")
         }
-        const cart = this.carts.find(c => c.id === id);
+        const cart = await Cart.findById(cartId).populate('products.productId')
         if (!cart) {
-            throw new Error("No se encontró el carrito")
+            throw new Error("No se encontró el carrito");
         }
-        return cart ? cart.products : [];
+        return cart.products
     }
-    addProductToCart(cartId, productId) {
-        const id = parseInt(cartId);
-        if (isNaN(id)) {
-            throw new Error("El id del carrito debe ser un número")
+    async addProductToCart(cartId, productId, quantity = 1) {
+        if (!mongoose.Types.ObjectId.isValid(cartId) || !mongoose.Types.ObjectId.isValid(productId)) {
+            throw new Error("Los ids deben ser ObjectId válidos");
         }
-        console.log("Lista de carritos cargada:", this.carts);
-        const cart = this.carts.find(c => c.id === id);
 
+        const cart = await Cart.findById(cartId);
         if (!cart) {
-            throw new Error("Carrito no encontrado. ID del carrito:", id)
+            throw new Error("Carrito no encontrado");
         }
 
-        const productExistente = productManager.getProductsById(productId);
-        if (!productExistente) {
-            throw new Error("Producto no encontrado. ID del producto" + productId)
+        const product = await Producto.findById(productId);
+        if (!product) {
+            throw new Error("Producto no encontrado");
         }
 
-        const productoEnCarrito = cart.products.find(p => p.id === productId);
-        if (productoEnCarrito) {
-            productoEnCarrito.quantity += 1;
+        const productInCart = cart.products.find(p => p.productId.toString() === productId);
+        if (productInCart) {
+            productInCart.quantity += quantity;
         } else {
-            cart.products.push({ id: productId, quantity: 1 });
+            cart.products.push({ productId: productId, quantity })
         }
 
-        this.writeCartFile(this.carts)
+        await cart.save();
+    }
+
+    async removeProductFromCart(cartId, productId) {
+        if (!mongoose.Types.ObjectId.isValid(cartId) || !mongoose.Types.ObjectId.isValid(productId)) {
+            throw new Error("El id debe ser un ObjectId válido");
+        }
+        const cart = await Cart.findById(cartId);
+        if (!cart) {
+            throw new Error("Carrito no encontrado");
+        }
+
+        cart.products = cart.products.filter(p => !p.productId.equals(productId));
+
+        await cart.save();
+    }
+    async updateCart(cartId, products) {
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw new Error("El id debe ser un ObjectId válido");
+        }
+
+        const cart = await Cart.findById(cartId);
+        if (!cart) {
+            throw new Error("Carrito no encontrado");
+        }
+
+        cart.products = products.map(p => ({
+            productId: p.productId,
+            quantity: p.quantity,
+        }));
+        await cart.save();
+        return cart;
+    }
+    async updateProductQuantity(cartId, productId, quantity) {
+        if (!mongoose.Types.ObjectId.isValid(cartId) || !mongoose.Types.ObjectId.isValid(productId)) {
+            throw new Error("El id debe ser un ObjectId válido");
+        }
+
+        const cart = await Cart.findById(cartId);
+        if (!cart) {
+            throw new Error("Carrito no encontrado");
+        }
+
+        const existingProduct = cart.products.find(p => p.productId.equals(productId));
+        if (!existingProduct) {
+            throw new Error("Producto no encontrado en el carrito");
+        }
+
+        existingProduct.quantity = quantity;
+        await cart.save();
+    }
+    async clearCart(cartId) {
+        if (!mongoose.Types.ObjectId.isValid(cartId)) {
+            throw new Error("El id debe ser un ObjectId válido");
+        }
+
+        const cart = await Cart.findById(cartId);
+        if (!cart) {
+            throw new Error("Carrito no encontrado");
+        }
+
+        cart.products = [];
+        await cart.save();
     }
 }
 
-
-export const CartManager = new cartManager(
-    path.resolve(__dirname, "./data/carts.json")
-);
+export const cartManager = new CartManager();
