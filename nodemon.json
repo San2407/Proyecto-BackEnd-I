@@ -1,3 +1,0 @@
-{
-  "ignore": ["./src/data/products.json", "./src/data/carts.json"]
-}
