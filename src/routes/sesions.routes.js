@@ -1,6 +1,7 @@
 import express from "express"
 import passport from "passport"
 import { generateToken } from "../utils/jwtFunctions.js"
+import { UserDto } from "../dtos/user.dto.js";
 
 const router = express.Router();
 
@@ -32,7 +33,15 @@ router.post('/login', (req, res, next) => {
 })
 
 router.get('/current', passport.authenticate('current', { session: false }), (req, res) => {
-    res.json({ message: 'Usuario autenticado', user: req.user });
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: 'Usuario no autenticado' });
+        }
+        const userDTO = new UserDto(req.user);
+        res.json({ message: 'Usuario autenticado', user: userDTO });
+    } catch (error) {
+        res.status(500).json({ message: 'Error interno del servidor', error: error.message });
+    }
 })
 
 export default router;

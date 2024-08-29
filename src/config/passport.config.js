@@ -18,6 +18,7 @@ function initializePassport() {
     }, async (req, email, password, done) => {
         try {
             const existingUser = await userModel.findOne({ email: email });
+            const { role } = req.body;
             if (existingUser) {
                 return done(null, false, { message: 'Ya existe un usuario con ese correo' });
             }
@@ -26,7 +27,8 @@ function initializePassport() {
                 last_name: req.body.last_name,
                 email: email,
                 password: password,
-                age: req.body.age
+                age: req.body.age,
+                role: role === 'admin' ? 'admin' : 'user'
             });
             await newUser.save();
             return done(null, newUser);

@@ -1,5 +1,5 @@
 import express from "express"
-import indexRoutes from "./routes/index.js"
+import indexRoutes from "./routes/index.routes.js"
 import handlebars from "express-handlebars"
 import path from "path"
 import __dirname from "./dirname.js";

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Producto from "../models/products.models.js"
-class ProductManager {
+class ProductController {
     async addProduct(product) {
         const { title, description, code, price, stock, status, category, thumbnails } = product;
         if (
@@ -75,4 +75,4 @@ class ProductManager {
 }
 
 
-export const productManager = new ProductManager();
+export const productController = new ProductController();

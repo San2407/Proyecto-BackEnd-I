@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Cart from "../models/carts.models.js";
 import Producto from "../models/products.models.js";
-class CartManager {
+class CartController {
     async createCart() {
         const newCart = new Cart({ products: [] })
         await newCart.save();
@@ -106,4 +106,4 @@ class CartManager {
     }
 }
 
-export const cartManager = new CartManager();
+export const cartController = new CartController();
