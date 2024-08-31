@@ -19,7 +19,7 @@ export const sendPurchaseEmail = async (user, ticket) => {
         html: `<h1>Detalles de la compra</h1>
                <p><strong>Código:</strong> ${ticket.code}</p>
                <p><strong>Fecha:</strong> ${ticket.purchase_datetime}</p>
-               <p><strong>Total:</strong> ${ticket.amount}</p>
+               <p><strong>Total:</strong> $${ticket.amount}</p>
                <p><strong>Comprador:</strong> ${user.first_name} ${user.last_name}</p>
                <p>Gracias por tu compra!</p>`
     };
