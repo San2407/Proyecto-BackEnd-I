@@ -4,7 +4,7 @@ import { authorizeRole } from "../middlewares/authorization.middleware.js";
 import passport from 'passport';
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", passport.authenticate('current', { session: false }), authorizeRole("user"), async (req, res) => {
     try {
         const newCart = await cartController.createCart();
         res.json(newCart);
@@ -83,5 +83,10 @@ router.delete("/:cid", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+router.post('/:cid/purchase',
+    passport.authenticate('current', { session: false }),
+    authorizeRole("user"),
+    async (req, res) => cartController.purchaseCart(req, res));
 
 export default router;

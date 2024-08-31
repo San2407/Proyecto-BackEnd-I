@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
+import { config } from "../config/config.js";
 
-const dbUrl = 'mongodb://127.0.0.1:27017';
 const connectionDB = async () => {
     try {
-        await mongoose.connect(dbUrl, {
+        await mongoose.connect(config.DB_URL, {
             serverSelectionTimeoutMS: 30000,
         })
         console.log('MongoDB connected')

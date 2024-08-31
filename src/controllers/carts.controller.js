@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Cart from "../models/carts.models.js";
 import Producto from "../models/products.models.js";
+import { ticketModel } from "../models/ticket.model.js";
+import { sendPurchaseEmail } from "../config/email.config.js";
 class CartController {
     async createCart() {
         const newCart = new Cart({ products: [] })
@@ -103,6 +105,69 @@ class CartController {
 
         cart.products = [];
         await cart.save();
+    }
+
+    async purchaseCart(req, res) {
+        try {
+            const cartId = req.params.cid;
+            const cart = await Cart.findById(cartId).populate('products.productId');
+
+            if (!cart) {
+                return res.status(404).json({ message: 'Carrito no encontrado' });
+            }
+
+            let totalAmount = 0;
+            const productsOutOfStock = [];
+
+            for (const item of cart.products) {
+                const product = item.productId;
+                const quantity = item.quantity;
+
+                if (product.stock >= quantity) {
+                    product.stock -= quantity;
+                    totalAmount += product.price * quantity;
+                    await product.save();
+                } else {
+                    productsOutOfStock.push({
+                        productId: product._id,
+                        productName: product.name,
+                        quantity: quantity,
+                        stock: product.stock
+                    });
+                }
+            }
+            if (productsOutOfStock.length > 0) {
+                return res.status(400).json({
+                    message: "Stock insuficiente en los siguientes productos:",
+                    details: productsOutOfStock
+                });
+            }
+
+            if (totalAmount > 0) {
+                const ticket = await ticketModel.create({
+                    purchase_datetime: new Date(),
+                    amount: totalAmount,
+                    purchaser: req.user._id
+                });
+
+                cart.products = cart.products.filter(item => !productsOutOfStock.some(p => p.productId.equals(item.productId)));
+                await cart.save();
+
+                try {
+                    await sendPurchaseEmail(req.user, ticket);
+                } catch (emailError) {
+                    console.error('Error al enviar el email', emailError);
+                    return res.status(201).json({
+                        message: "Compra realizada con éxito, pero no se pudo enviar el correo de confirmación",
+                        ticket
+                    });
+                }
+                res.status(201).json({ message: "compra realizada con éxito", ticket });
+            }
+
+        } catch (error) {
+            res.status(500).json({ error: "Error al realizar la compra", details: error.message });
+        }
     }
 }
 

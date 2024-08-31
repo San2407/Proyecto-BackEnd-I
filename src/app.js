@@ -8,11 +8,12 @@ import initializeSocket from "./utils/socket.js";
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
+import { config } from "./config/config.js";
 
 const app = express();
 
 connectionDB();
-const PORT = 8080;
+const PORT = config.PORT;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../public")));

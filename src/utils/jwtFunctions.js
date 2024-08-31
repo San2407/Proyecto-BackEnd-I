@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
+import { config } from "../config/config.js";
 
-export const JWT_SECRET = "g3h31m";
-
+const JWT_SECRET = config.JWT_SECRET;
+export { JWT_SECRET };
 export function generateToken(payload) {
     const token = jwt.sign(payload, JWT_SECRET, {
         expiresIn: "2h",
