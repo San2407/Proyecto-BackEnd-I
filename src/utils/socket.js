@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { productController } from "../controllers/products.controller.js";
+import winstonLogger from "../config/logger.config.js";
 
 // Función para inicializar Socket.io con el servidor de Express
 export default function initializeSocket(httpServer) {
@@ -7,7 +8,7 @@ export default function initializeSocket(httpServer) {
 
     io.on("connection", async (socket) => {
         try {
-            console.log("Nuevo Cliente Conectado");
+            winstonLogger.info("Nuevo Cliente Conectado");
 
             // Obtener la lista de productos y emitirla al cliente conectado
             const products = await productController.getProducts();
@@ -20,7 +21,7 @@ export default function initializeSocket(httpServer) {
                     const updatedProducts = await productController.getProducts();
                     io.emit('products', updatedProducts);
                 } catch (error) {
-                    console.error(error);
+                    winstonLogger.error(error);
                 }
             })
 
@@ -31,12 +32,12 @@ export default function initializeSocket(httpServer) {
                     const updatedProducts = await productController.getProducts();
                     io.emit('products', updatedProducts);
                 } catch (error) {
-                    console.error(error);
+                    winstonLogger.error(error);
                 }
             })
 
         } catch (error) {
-            console.error("Error al conectar el cliente:", error);
+            winstonLogger.error("Error al conectar el cliente:", error);
         }
     })
 }

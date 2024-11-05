@@ -2,6 +2,7 @@ import express from "express"
 import passport from "passport"
 import { generateToken } from "../utils/jwtFunctions.js"
 import { UserDto } from "../dtos/user.dto.js";
+import winstonLogger from "../config/logger.config.js";
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.post('/register', (req, res, next) => {
             return next(err);
         }
         if (!user) {
+            winstonLogger.warn({ error: info.message });
             return res.status(400).json({ error: info.message });
         }
         res.status(201).json({ message: 'Usuario registrado exitosamente', user });
@@ -22,6 +24,7 @@ router.post('/login', (req, res, next) => {
         if (err) return next(err)
 
         if (!user) {
+            winstonLogger.warn({ error: info ? info.message : 'Error al iniciar sesión' });
             return res.status(400).json({ message: info ? info.message : 'Error al iniciar sesión' })
         }
 
@@ -35,12 +38,14 @@ router.post('/login', (req, res, next) => {
 router.get('/current', passport.authenticate('current', { session: false }), (req, res) => {
     try {
         if (!req.user) {
+            winstonLogger.warn({ error: 'Usuario no autenticado' });
             return res.status(401).json({ message: 'Usuario no autenticado' });
         }
         const userDTO = new UserDto(req.user);
         res.json({ message: 'Usuario autenticado', user: userDTO });
     } catch (error) {
-        res.status(500).json({ message: 'Error interno del servidor', error: error.message });
+        winstonLogger.error({ error: 'Error interno del servidor', details: error.message });
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 })
 

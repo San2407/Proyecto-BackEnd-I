@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { config } from "./config.js";
+import winstonLogger from './logger.config.js';
 
 const transporter = nodemailer.createTransport({
     host: config.mailer.host,
@@ -26,9 +27,9 @@ export const sendPurchaseEmail = async (user, ticket) => {
 
     try {
         await transporter.sendMail(mailoptions);
-        console.log('Email enviado');
+        winstonLogger.info('Email enviado');
     } catch (error) {
-        console.error('Error al enviar el email', error);
+        winstonLogger.error('Error al enviar el email', error);
         throw new Error('Error al enviar el email');
     }
 }

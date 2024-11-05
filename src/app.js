@@ -9,6 +9,8 @@ import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
+import winston from "./middlewares/winstonLogger.middleware.js";
+import winstonLogger from "./config/logger.config.js";
 
 const app = express();
 
@@ -18,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(cookieParser());
-
+app.use(winston);
 initializePassport();
 app.use(passport.initialize());
 
@@ -37,7 +39,7 @@ app.set("views", `${__dirname}/views`);
 app.use("/", indexRoutes)
 
 const httpServer = app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+    winstonLogger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
 initializeSocket(httpServer);

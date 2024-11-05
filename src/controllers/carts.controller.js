@@ -3,6 +3,7 @@ import Cart from "../models/carts.models.js";
 import Producto from "../models/products.models.js";
 import { ticketModel } from "../models/ticket.model.js";
 import { sendPurchaseEmail } from "../config/email.config.js";
+import winstonLogger from "../config/logger.config.js";
 class CartController {
     async createCart() {
         const newCart = new Cart({ products: [] })
@@ -113,6 +114,7 @@ class CartController {
             const cart = await Cart.findById(cartId).populate('products.productId');
 
             if (!cart) {
+                winstonLogger.warn({ error: 'Carrito no encontrado' });
                 return res.status(404).json({ message: 'Carrito no encontrado' });
             }
 
@@ -137,6 +139,7 @@ class CartController {
                 }
             }
             if (productsOutOfStock.length > 0) {
+                winstonLogger.warn({ error: 'Stock insuficiente en los siguientes productos', details: productsOutOfStock });
                 return res.status(400).json({
                     message: "Stock insuficiente en los siguientes productos:",
                     details: productsOutOfStock
@@ -156,7 +159,7 @@ class CartController {
                 try {
                     await sendPurchaseEmail(req.user, ticket);
                 } catch (emailError) {
-                    console.error('Error al enviar el email', emailError);
+                    winstonLogger.error('Error al enviar el email', emailError);
                     return res.status(201).json({
                         message: "Compra realizada con éxito, pero no se pudo enviar el correo de confirmación",
                         ticket

@@ -2,6 +2,7 @@ import express from "express"
 import { cartController } from "../controllers/carts.controller.js";
 import { authorizeRole } from "../middlewares/authorization.middleware.js";
 import passport from 'passport';
+import winstonLogger from "../config/logger.config.js";
 const router = express.Router();
 
 router.post("/", passport.authenticate('current', { session: false }), authorizeRole("user"), async (req, res) => {
@@ -9,6 +10,7 @@ router.post("/", passport.authenticate('current', { session: false }), authorize
         const newCart = await cartController.createCart();
         res.json(newCart);
     } catch (error) {
+        winstonLogger.error({ error: "Error al crear el carrito", details: error.message });
         res.status(500).json({ error: "Error al crear el carrito" });
     }
 })
@@ -19,7 +21,8 @@ router.get("/:cid", async (req, res) => {
         const products = await cartController.getProductsInCartById(cartId);
         res.json(products);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        winstonLogger.error({ error: "Error al obtener los productos del carrito", details: error.message });
+        res.status(500).json({ error: "Error al obtener los productos del carrito" });
     }
 })
 
@@ -32,7 +35,8 @@ router.post("/:cid/product/:pid", passport.authenticate('current', { session: fa
         await cartController.addProductToCart(cartId, productId, quantity || 1);
         res.status(204).json({ message: "El producto se ha agregado al carrito correctamente" });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        winstonLogger.error({ error: "Error al agregar el producto al carrito", details: error.message });
+        res.status(500).json({ error: "Error al agregar el producto al carrito" });
     }
 })
 
@@ -44,7 +48,8 @@ router.delete("/:cid/products/:pid", async (req, res) => {
         await cartController.removeProductFromCart(cartId, productId);
         res.status(204).json({ message: "El producto se ha eliminado del carrito correctamente" });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        winstonLogger.error({ error: "Error al eliminar el producto del carrito", details: error.message });
+        res.status(500).json({ error: "Error al eliminar el producto del carrito" });
     }
 });
 
@@ -56,7 +61,8 @@ router.put("/:cid", async (req, res) => {
         const updatedCart = await cartController.updateCart(cartId, products);
         res.status(200).json(updatedCart);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        winstonLogger.error({ error: "Error al actualizar el carrito", details: error.message });
+        res.status(500).json({ error: "Error al actualizar el carrito" });
     }
 });
 
@@ -69,7 +75,8 @@ router.put("/:cid/products/:pid", async (req, res) => {
         await cartController.updateProductQuantity(cartId, productId, quantity);
         res.status(204).json({ message: "La cantidad del producto se ha actualizado correctamente" });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        winstonLogger.error({ error: "Error al actualizar la cantidad del producto en el carrito", details: error.message });
+        res.status(500).json({ error: "Error al actualizar la cantidad del producto en el carrito" });
     }
 });
 
@@ -80,7 +87,8 @@ router.delete("/:cid", async (req, res) => {
         await cartController.clearCart(cartId);
         res.status(204).json({ message: "Todos los productos se han eliminado del carrito correctamente" });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        winstonLogger.error({ error: "Error al vaciar el carrito", details: error.message });
+        res.status(500).json({ error: "Error al vaciar el carrito" });
     }
 });
 

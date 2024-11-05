@@ -9,6 +9,7 @@ router.get("/", async (req, res) => {
         const productos = await Producto.paginate({}, { limit, page })
         res.render("home", { productos });
     } catch (error) {
+        winstonLogger.error({ error: "Error al obtener los productos", details: error.message });
         res.status(500).json({ error: "Error al obtener los productos" });
     }
 })

@@ -8,6 +8,7 @@ router.get("/", async (req, res) => {
         const users = await userModel.find();
         res.json(users);
     } catch (error) {
+        winstonLogger.error({ error: "Error al obtener los usuarios", details: error.message });
         res.status(500).json({ error: "Error al obtener los usuarios", details: error.message });
     }
 })
