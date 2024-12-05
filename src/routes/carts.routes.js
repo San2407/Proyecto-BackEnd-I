@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/", passport.authenticate('current', { session: false }), authorizeRole("user"), async (req, res) => {
     try {
         const newCart = await cartController.createCart();
-        res.json(newCart);
+        res.status(201).json(newCart);
     } catch (error) {
         winstonLogger.error({ error: "Error al crear el carrito", details: error.message });
         res.status(500).json({ error: "Error al crear el carrito" });
@@ -19,7 +19,7 @@ router.get("/:cid", async (req, res) => {
     const cartId = req.params.cid;
     try {
         const products = await cartController.getProductsInCartById(cartId);
-        res.json(products);
+        res.status(200).json(products);
     } catch (error) {
         winstonLogger.error({ error: "Error al obtener los productos del carrito", details: error.message });
         res.status(500).json({ error: "Error al obtener los productos del carrito" });

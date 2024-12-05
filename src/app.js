@@ -11,6 +11,9 @@ import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
 import winston from "./middlewares/winstonLogger.middleware.js";
 import winstonLogger from "./config/logger.config.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import swaggerOpts from "./utils/swaggerOpts.js";
 
 const app = express();
 
@@ -33,9 +36,11 @@ app.engine("hbs", handlebars.engine({
     },
 }))
 
+
 app.set("view engine", "hbs")
 app.set("views", `${__dirname}/views`);
 
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(swaggerOpts)));
 app.use("/", indexRoutes)
 
 const httpServer = app.listen(PORT, () => {

@@ -1,0 +1,60 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          required: true
+          description: Nombre del usuario
+        last_name:
+          type: string
+          required: true
+          description: Apellido del usuario
+        email:
+          type: string
+          required: true
+          description: Correo del usuario
+        age:
+          type: number
+          required: true
+          description: Edad del usuario
+        password:
+          type: string
+          required: true
+          description: Contraseña del usuario
+        cart:
+          type: string
+          required: true
+          description: ID del carrito asociado al usuario
+        role:
+          type: string
+          required: true
+          description: Rol del usuario
+          enum: [ admin, user ]
+
+paths:
+  /api/users:
+    get:
+      summary: Obtiene todos los usuarios
+      tags:
+      - Users
+      responses:
+        200:
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        500:
+          description: Error al obtener los usuarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error al obtener los usuarios

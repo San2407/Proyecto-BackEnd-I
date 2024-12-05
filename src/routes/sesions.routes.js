@@ -9,7 +9,8 @@ const router = express.Router();
 router.post('/register', (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
         if (err) {
-            return next(err);
+            winstonLogger.error({ error: 'Error interno del servidor', details: err.message });
+            return next(err)
         }
         if (!user) {
             winstonLogger.warn({ error: info.message });
@@ -21,7 +22,10 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
     passport.authenticate('login', { session: false }, (err, user, info) => {
-        if (err) return next(err)
+        if (err) {
+            winstonLogger.error({ error: 'Error interno del servidor', details: err.message });
+            return next(err)
+        }
 
         if (!user) {
             winstonLogger.warn({ error: info ? info.message : 'Error al iniciar sesión' });
@@ -42,7 +46,7 @@ router.get('/current', passport.authenticate('current', { session: false }), (re
             return res.status(401).json({ message: 'Usuario no autenticado' });
         }
         const userDTO = new UserDto(req.user);
-        res.json({ message: 'Usuario autenticado', user: userDTO });
+        res.status(200).json({ message: 'Usuario autenticado', user: userDTO });
     } catch (error) {
         winstonLogger.error({ error: 'Error interno del servidor', details: error.message });
         res.status(500).json({ message: 'Error interno del servidor' });

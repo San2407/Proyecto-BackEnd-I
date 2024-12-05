@@ -6,10 +6,10 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         const users = await userModel.find();
-        res.json(users);
+        res.status(200).json(users);
     } catch (error) {
         winstonLogger.error({ error: "Error al obtener los usuarios", details: error.message });
-        res.status(500).json({ error: "Error al obtener los usuarios", details: error.message });
+        res.status(500).json({ error: "Error al obtener los usuarios" });
     }
 })
 

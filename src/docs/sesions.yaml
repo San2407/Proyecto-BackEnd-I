@@ -1,0 +1,179 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario
+        age:
+          type: integer
+          description: Edad
+        role:
+          type: string
+          description: Rol del usuario
+          enum:
+          - admin
+          - user
+        cart:
+          type: string
+          description: ID del carrito asociado al usuario
+    UserDto:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario
+        age:
+          type: integer
+          description: Edad
+        role:
+          type: string
+          description: Rol del usuario
+          enum:
+          - admin
+          - user
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensaje de éxito
+        user:
+          $ref: "#/components/schemas/User"
+    CurrentResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensaje de autenticación
+        user:
+          $ref: '#/components/schemas/UserDto'
+
+paths:
+  /api/sessions/register:
+    post:
+      summary: Registra un nuevo usuario
+      tags:
+      - Sesiones
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: Usuario registrado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Mensaje de éxito
+                    example: 'Usuario registrado correctamente'
+                  user:
+                    $ref: '#/components/schemas/User'
+        400:
+          description: Error al registrar el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Error al registrar el usuario'
+
+api/sesions/login:
+  post:
+    summary: Inicia sesión de un usuario
+    tags:
+    - Sesiones
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: Correo del usuario
+              password:
+                type: string
+                description: Contraseña del usuario
+    responses:
+      200:
+        description: Sesión iniciada exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginResponse'
+              properties:
+                message:
+                  type: string
+                  example: 'Sesión iniciada exitosamente'
+      400:
+        description: Error al iniciar sesión
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error al iniciar sesión'
+
+api/sessions/current:
+  get:
+    summary: Obtiene la información del usuario autenticado
+    tags:
+    - Sesiones
+    security:
+    - bearerAuth: []
+    responses:
+      200:
+        description: Usuario autenticado con éxito
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrentResponse'
+              properties:
+                message:
+                  type: string
+                  example: 'Usuario autenticado'
+      401:
+        description: Usuario no autenticado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Usuario no autenticado'
+      500:
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Error interno del servidor'

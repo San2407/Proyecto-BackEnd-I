@@ -1,0 +1,112 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código único del producto.
+        title:
+          type: string
+          description: Título del producto
+        description:
+          type: string
+          description: Descripción del producto
+        price:
+          type: number
+          description: Precio del producto
+        stock:
+          type: number
+          description: Stock disponible
+        category:
+          type: string
+          description: Categoría del producto
+    PaginatedProducts:
+      type: object
+      properties:
+        docs:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        totalDocs:
+          type: number
+          description: Total de documentos disponibles
+        limit:
+          type: number
+          description: Límite de documentos por página
+        totalPages:
+          type: number
+          description: Total de páginas disponibles
+        page:
+          type: number
+          description: Página actual
+        pagingCounter:
+          type: number
+          description: Contador de paginación
+        hasPrevPage:
+          type: boolean
+          description: Indica si existe una página anterior
+        hasNextPage:
+          type: boolean
+          description: Indica si existe una página siguiente
+        prevPage:
+          type: number
+          description: Número de la página anterior
+        nextPage:
+          type: number
+          description: Número de la siguiente página
+
+paths:
+  /:
+    get:
+      summary: Renderiza la pagina principal con la lista de productos
+      tags:
+      - Views
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: number
+        required: false
+        description: Número de la página a mostrar
+      - in: query
+        name: limit
+        schema:
+          type: number
+        required: false
+        description: Límite de productos por página
+      responses:
+        200:
+          description: Página principal renderizada con éxito
+        500:
+          description: Error al obtener los productos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Error al obtener los productos
+/RealTimeProducts:
+  get:
+    summary: Obtiene los productos en tiempo real
+    tags:
+    - Views
+    responses:
+      200:
+        description: Productos obtenidos con éxito
+        content:
+          text/html:
+            schema:
+              $ref: "#/components/schemas/PaginatedProducts"
+      500:
+        description: Error al obtener los productos
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Error al obtener los productos

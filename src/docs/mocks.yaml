@@ -1,0 +1,141 @@
+components:
+  schemas:
+    MockUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo electrónico del usuario
+        age:
+          type: number
+          description: Edad del usuario
+        role:
+          type: string
+          description: Rol del usuario
+          enum:
+          - admin
+          - user
+
+    MockProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del producto
+        description:
+          type: string
+          description: Descripción del producto
+        price:
+          type: number
+          description: Precio del producto
+        code:
+          type: string
+          description: Código del producto
+        stock:
+          type: number
+          description: Cantidad disponible en stock
+
+paths:
+  /api/mocks/users/{n}:
+    get:
+      summary: Genera una lista de usuarios de prueba
+      tags:
+      - Mock
+      parameters:
+      - in: path
+        name: n
+        required: true
+        schema:
+          type: integer
+          description: Número de usuarios de prueba a generar
+        example: 5
+      responses:
+        201:
+          description: Usuarios de prueba generados exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Usuarios de prueba generados exitosamente'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MockUser'
+        400:
+          description: El número debe ser mayor a cero
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'El número debe ser mayor a cero'
+        500:
+          description: Error al generar los usuarios de prueba
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Error al generar los usuarios de prueba'
+
+  /api/mocks/products/{n}:
+    get:
+      summary: Genera una lista de productos de prueba
+      tags:
+      - Mock
+      parameters:
+      - in: path
+        name: n
+        required: true
+        schema:
+          type: integer
+          description: Número de productos de prueba a generar
+        example: 5
+      responses:
+        201:
+          description: Productos de prueba generados exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Productos de prueba generados exitosamente'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MockProduct'
+        400:
+          description: El número debe ser mayor a cero
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'El número debe ser mayor a cero'
+        500:
+          description: Error al generar los productos de prueba
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Error al generar los productos de prueba'

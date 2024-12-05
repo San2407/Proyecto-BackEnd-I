@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
     const { page = 1, limit = 10 } = req.query
     try {
         const showProducts = await productController.getProducts(parseInt(page) || 1, parseInt(limit) || 10);
-        res.json(showProducts)
+        res.status(200).json(showProducts)
     } catch {
         winstonLogger.error({ error: "Error al obtener los productos", details: error.message });
         res.status(500).json({ error: "Error al obtener los productos" })
@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
             winstonLogger.warn({ error: "Producto no encontrado" });
             res.status(404).json({ error: "Producto no encontrado" })
         } else {
-            res.json(product);
+            res.status(200).json(product);
         }
     } catch (error) {
         winstonLogger.error({ error: "Error al obtener el producto", details: error.message });
