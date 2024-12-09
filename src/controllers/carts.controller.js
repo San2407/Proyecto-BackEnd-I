@@ -60,6 +60,10 @@ class CartController {
         await cart.save();
     }
     async updateCart(cartId, products) {
+        if (!Array.isArray(products)) {
+            throw new Error("El parámetro 'products' debe ser un array");
+        }
+
         if (!mongoose.Types.ObjectId.isValid(cartId)) {
             throw new Error("El id debe ser un ObjectId válido");
         }
@@ -111,7 +115,7 @@ class CartController {
     async purchaseCart(req, res) {
         try {
             const cartId = req.params.cid;
-            const cart = await Cart.findById(cartId).populate('products.productId');
+            const cart = await Cart.findById(cartId).populate('products.productId').lean();
 
             if (!cart) {
                 winstonLogger.warn({ error: 'Carrito no encontrado' });
@@ -121,14 +125,21 @@ class CartController {
             let totalAmount = 0;
             const productsOutOfStock = [];
 
+            const productsUpdates = [];
+
             for (const item of cart.products) {
                 const product = item.productId;
                 const quantity = item.quantity;
 
                 if (product.stock >= quantity) {
-                    product.stock -= quantity;
                     totalAmount += product.price * quantity;
-                    await product.save();
+
+                    productsUpdates.push({
+                        updateOne: {
+                            filter: { _id: product._id },
+                            update: { $inc: { stock: -quantity } }
+                        }
+                    })
                 } else {
                     productsOutOfStock.push({
                         productId: product._id,
@@ -138,6 +149,7 @@ class CartController {
                     });
                 }
             }
+
             if (productsOutOfStock.length > 0) {
                 winstonLogger.warn({ error: 'Stock insuficiente en los siguientes productos', details: productsOutOfStock });
                 return res.status(400).json({
@@ -147,28 +159,24 @@ class CartController {
             }
 
             if (totalAmount > 0) {
+                await Producto.bulkWrite(productsUpdates);
                 const ticket = await ticketModel.create({
                     purchase_datetime: new Date(),
                     amount: totalAmount,
                     purchaser: req.user._id
                 });
 
-                cart.products = cart.products.filter(item => !productsOutOfStock.some(p => p.productId.equals(item.productId)));
-                await cart.save();
+                await Cart.updateOne(
+                    { _id: cartId },
+                    { $set: { products: cart.products.filter(item => !productsOutOfStock.some(p => p.productId.equals(item.productId))) } }
+                )
 
-                try {
-                    await sendPurchaseEmail(req.user, ticket);
-                } catch (emailError) {
-                    winstonLogger.error('Error al enviar el email', emailError);
-                    return res.status(201).json({
-                        message: "Compra realizada con éxito, pero no se pudo enviar el correo de confirmación",
-                        ticket
-                    });
-                }
+                sendPurchaseEmail(req.user, ticket);
                 res.status(201).json({ message: "compra realizada con éxito", ticket });
             }
 
         } catch (error) {
+            winstonLogger.error({ error: "Error al realizar la compra", details: error.message });
             res.status(500).json({ error: "Error al realizar la compra", details: error.message });
         }
     }

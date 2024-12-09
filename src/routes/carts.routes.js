@@ -61,7 +61,10 @@ router.put("/:cid", async (req, res) => {
         const updatedCart = await cartController.updateCart(cartId, products);
         res.status(200).json(updatedCart);
     } catch (error) {
-        winstonLogger.error({ error: "Error al actualizar el carrito", details: error.message });
+        winstonLogger.error({
+            message: 'Error al actualizar el carrito',
+            details: error.message
+        });
         res.status(500).json({ error: "Error al actualizar el carrito" });
     }
 });

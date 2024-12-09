@@ -145,7 +145,7 @@ api/sessions/current:
     tags:
     - Sesiones
     security:
-    - bearerAuth: []
+    - cookieAuth: []
     responses:
       200:
         description: Usuario autenticado con éxito

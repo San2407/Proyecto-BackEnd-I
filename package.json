@@ -5,7 +5,12 @@
   "main": "./src/app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-mocks": "mocha ./test/mocks.test.js",
+    "test-sessions": "mocha ./test/sessions.test.js",
+    "test-products": "mocha ./test/products.test.js",
+    "test-carts": "mocha ./test/carts.test.js",
+    "test-views": "mocha ./test/views.test.js",
+    "test-users": "mocha ./test/users.test.js",
     "dev": "nodemon app.js"
   },
   "keywords": [],
@@ -31,5 +36,10 @@
     "swagger-ui-express": "^5.0.1",
     "uuidv4": "^6.2.13",
     "winston": "^3.16.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1",
+    "supertest": "^7.0.0"
   }
 }

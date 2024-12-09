@@ -54,7 +54,7 @@ paths:
       tags:
       - Carts
       security:
-      - bearerAuth: []
+      - cookieAuth: []
       responses:
         201:
           description: Carrito creado exitosamente
@@ -177,7 +177,7 @@ paths:
       tags:
       - Carts
       security:
-      - bearerAuth: []
+      - cookieAuth: []
       parameters:
       - in: path
         name: cid
@@ -266,7 +266,7 @@ paths:
       tags:
       - Carts
       security:
-      - bearerAuth: []
+      - cookieAuth: []
       parameters:
       - in: path
         name: cid

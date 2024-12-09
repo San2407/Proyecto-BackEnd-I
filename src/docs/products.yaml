@@ -79,7 +79,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - cookieAuth: []
       requestBody:
         required: true
         content:
@@ -92,11 +92,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
+                type: object
                 properties:
                 message:
                   type: string
                   example: 'Producto agregado exitosamente'
+                newProduct:
+                  $ref: "#/components/schemas/Product"
         500:
           description: Error al agregar el producto
           content:
@@ -151,7 +153,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - cookieAuth: []
       parameters:
       - in: path
         name: id

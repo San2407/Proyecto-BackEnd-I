@@ -9,16 +9,17 @@ export const swaggerOpts = {
         },
         components: {
             securitySchemes: {
-                bearerAuth: {
-                    type: "http",
-                    scheme: "bearer",
+                cookieAuth: {
+                    type: "apiKey",
+                    in: "cookie",
+                    name: "token",
                     bearerFormat: "JWT",
                 },
             },
         },
         security: [
             {
-                bearerAuth: [],
+                cookieAuth: [],
             },
         ],
     },

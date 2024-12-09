@@ -20,7 +20,8 @@ class ProductController {
         }
 
         const newProduct = new Producto({ title, description, code, price, stock, category, status, thumbnails });
-        await newProduct.save();
+        const savedProduct = await newProduct.save();
+        return savedProduct;
     }
 
     async getProducts(page = 1, limit = 10) {
