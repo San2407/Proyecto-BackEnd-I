@@ -19,10 +19,5 @@ services:
       - "8080:8080"
     depends_on:
       - mongo
-    environment:
-      - NODE_ENV=production
-      - DB_URL=mongodb+srv://salbarracin24:ueYM0PUMyeBZcV1x@clusterfree.jcj9ggx.mongodb.net/
-      - EMAIL_HOST=salbarracin24@gmail.com
-      - EMAIL_HOST_PASS=dmdw dghd lsvr sdch
-      - MAILER_HOST=smtp.gmail.com
-      - MAILER_PORT=587
+    env_file:
+      - .env.production
