@@ -1,5 +1,6 @@
 import express from "express"
 import Producto from "../models/products.models.js"
+import winstonLogger from "../config/logger.config.js"
 
 const router = express.Router();
 

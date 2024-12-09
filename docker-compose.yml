@@ -1,0 +1,27 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+
+  app:
+    build:
+      context: .
+    container_name: project-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - DB_URL = mongodb://host.docker.internal:27017/project-backend
+      - EMAIL_HOST=salbarracin24@gmail.com
+      - EMAIL_HOST_PASS=dmdw dghd lsvr sdch
+      - MAILER_HOST=smtp.gmail.com
+      - MAILER_PORT=587
