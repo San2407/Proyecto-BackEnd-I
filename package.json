@@ -11,11 +11,11 @@
     "test-carts": "mocha ./test/carts.test.js",
     "test-views": "mocha ./test/views.test.js",
     "test-users": "mocha ./test/users.test.js",
-    "dev": "nodemon app.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/app.js",
     "image": "docker build -t project-backend .",
     "rename": "docker tag project-backend salbarracin24/project-backend:1.0.0",
     "push": "docker push salbarracin24/project-backend:1.0.0",
-    "start": "node ./src/app.js"
+    "start": "cross-env NODE_ENV=production node ./src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "chai": "^5.1.2",
+    "cross-env": "^7.0.3",
     "mocha": "^11.0.1",
     "supertest": "^7.0.0"
   }

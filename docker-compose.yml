@@ -20,7 +20,8 @@ services:
     depends_on:
       - mongo
     environment:
-      - DB_URL = mongodb://host.docker.internal:27017/project-backend
+      - NODE_ENV=production
+      - DB_URL=mongodb+srv://salbarracin24:ueYM0PUMyeBZcV1x@clusterfree.jcj9ggx.mongodb.net/
       - EMAIL_HOST=salbarracin24@gmail.com
       - EMAIL_HOST_PASS=dmdw dghd lsvr sdch
       - MAILER_HOST=smtp.gmail.com
